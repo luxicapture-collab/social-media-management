@@ -181,8 +181,13 @@ export function goalPace(goal: GoalInput, series: Array<{ date: Date; value: num
   const total = Math.max(1, daysBetween(goal.startDate, goal.deadline));
   const elapsed = Math.min(total, Math.max(0, daysBetween(goal.startDate, now)));
   const daysLeft = Math.max(0, daysBetween(now, goal.deadline));
-  const points = series.filter((s) => s.date >= goal.startDate && s.date <= now).sort((a, b) => a.date.getTime() - b.date.getTime());
+  const sorted = series.filter((s) => s.date <= now).sort((a, b) => a.date.getTime() - b.date.getTime());
   const agg = KPI_AGGREGATION[goal.kpi];
+  // A level KPI (followers, ER) is "where it is now", so the latest reading counts even if it was
+  // taken just before the goal started; flow KPIs only count what happened inside the window.
+  const inWindow = sorted.filter((s) => s.date >= goal.startDate);
+  const lastBeforeStart = [...sorted].reverse().find((s) => s.date < goal.startDate);
+  const points = agg === "level" ? (lastBeforeStart ? [lastBeforeStart, ...inWindow] : inWindow) : inWindow;
 
   if (!points.length) {
     return { status: "unknown", actual: null, expected: null, progress: null, projected: null, daysElapsed: elapsed, daysLeft, requiredPerDay: null };
@@ -210,7 +215,7 @@ export function goalPace(goal: GoalInput, series: Array<{ date: Date; value: num
   const requiredPerDay = daysLeft > 0 ? remaining / daysLeft : null;
 
   let status: PaceStatus;
-  if (points.length < 3 || elapsed < 2) status = "unknown";
+  if (inWindow.length < 3 || elapsed < 2) status = "unknown";
   else {
     const expectedGain = expected - baseline;
     const actualGain = actual - baseline;

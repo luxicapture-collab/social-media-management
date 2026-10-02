@@ -116,6 +116,8 @@ export interface ClientAutonomy {
   replies: ReplyPolicy;
   autoApplyMicroPivots: boolean;
   weeklyBudgetUsd: number;
+  /** Appended to captions of AI-generated media on routes without a native AI label (direct API). Empty = off. */
+  aiDisclosureText: string;
   cadence: {
     reelsPerWeek: number;
     feedPostsPerWeek: number;
@@ -143,6 +145,7 @@ export const DEFAULT_AUTONOMY: ClientAutonomy = {
   replies: "auto",
   autoApplyMicroPivots: true,
   weeklyBudgetUsd: 150,
+  aiDisclosureText: "AI-assisted visuals.",
   cadence: { reelsPerWeek: 3, feedPostsPerWeek: 2, storiesPerWeek: 7, linkedinPerWeek: 2, xPerWeek: 3 },
 };
 

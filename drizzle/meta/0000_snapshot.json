@@ -1,5 +1,5 @@
 {
-  "id": "00d03a49-2ac7-49d9-84b8-59d305fd0fe8",
+  "id": "6eb30184-4a79-418b-81a9-ce87693cf1aa",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -2496,6 +2496,13 @@
           "primaryKey": false,
           "notNull": true,
           "default": "'direct'"
+        },
+        "manual": {
+          "name": "manual",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
         },
         "created_at": {
           "name": "created_at",

@@ -319,6 +319,7 @@ CREATE TABLE "publications" (
 	"metrics_updated_at" timestamp with time zone,
 	"checkpoints" jsonb DEFAULT '{}'::jsonb NOT NULL,
 	"route" text DEFAULT 'direct' NOT NULL,
+	"manual" boolean DEFAULT false NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );

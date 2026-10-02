@@ -208,6 +208,8 @@ export const publications = pgTable(
     metricsUpdatedAt: ts("metrics_updated_at"),
     checkpoints: jsonb("checkpoints").$type<Record<string, string>>().notNull().default({}),
     route: text("route").$type<"direct" | "metricool">().notNull().default("direct"),
+    /** Stories with interactive stickers are posted by hand from the phone (APIs can't add stickers). */
+    manual: boolean("manual").notNull().default(false),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },

@@ -33,6 +33,7 @@ const EnvSchema = z.object({
   DEMO_MODE: z.enum(["auto", "true", "false"]).default("auto"),
   AGENCY_TIMEZONE: z.string().default("UTC"),
   AGENCY_NAME: z.string().default("Luxi Capture"),
+  OWNER_NAME: z.string().default("Morteza"),
 
   ANTHROPIC_API_KEY: optional,
   CLAUDE_MODEL: z.string().default("claude-opus-5-5"),
@@ -104,6 +105,7 @@ function buildConfig(env: NodeJS.ProcessEnv) {
     demo,
     appUrl: e.APP_URL.replace(/\/$/, ""),
     agencyName: e.AGENCY_NAME,
+    ownerName: e.OWNER_NAME,
     agencyTimezone: e.AGENCY_TIMEZONE,
     dataDir,
     sessionSecret: devFallback("SESSION_SECRET", e.SESSION_SECRET, "dev-session-secret-change-me-dev-session-secret"),
