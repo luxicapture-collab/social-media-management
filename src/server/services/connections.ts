@@ -193,7 +193,7 @@ export async function connectDemoAccounts(clientId: string, platforms: Platform[
       handle: `demo_${clientId.replace(/[^a-z0-9]/gi, "").slice(0, 12)}`,
       accessToken: "demo",
       mode: "demo",
-      meta: { followers: p === "linkedin" ? Math.round(followers * 0.4) : p === "x" ? Math.round(followers * 0.3) : followers },
+      meta: { followers: p === "linkedin" ? Math.round(followers * 0.4) : p === "x" ? Math.round(followers * 0.3) : followers, anchorDay: Math.floor(Date.now() / 86_400_000) },
     });
   }
 }

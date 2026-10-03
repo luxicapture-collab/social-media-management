@@ -507,7 +507,7 @@ export const chatMessages = pgTable(
     id: id(),
     threadId: text("thread_id").notNull().references(() => chatThreads.id, { onDelete: "cascade" }),
     seq: integer("seq").notNull(),
-    role: text("role").$type<"user" | "assistant">().notNull(),
+    role: text("role").$type<"user" | "assistant" | "system">().notNull(),
     content: jsonb("content").$type<unknown>().notNull(),
     createdAt: createdAt(),
   },

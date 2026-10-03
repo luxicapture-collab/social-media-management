@@ -162,6 +162,11 @@ describe("full agent loop in demo mode", () => {
     const inbox = await db.select().from(inboxItems).where(eq(inboxItems.clientId, clientId));
     expect(inbox.some((i) => i.status === "sent" && i.reply)).toBe(true);
     expect(inbox.some((i) => i.status === "hidden")).toBe(true);
+    // Price questions are leads: answered without a quote, then flagged for a personal follow-up.
+    const lead = inbox.find((i) => i.category === "lead");
+    expect(lead?.status).toBe("needs_you");
+    expect(lead?.repliedAt).toBeInstanceOf(Date);
+    expect(lead?.reply).not.toMatch(/\$|€|AED|\d{3,}/);
     const persian = inbox.find((i) => i.text.includes("قیمت"));
     if (persian) expect(persian.language).toBe("fa");
     // A second sync does not duplicate.

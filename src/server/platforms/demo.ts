@@ -64,9 +64,11 @@ export function demoAdapter(platform: Platform): PlatformAdapter {
     async accountMetrics(conn: ConnectionCtx, since: Date): Promise<AccountMetrics> {
       const base = Number(conn.meta.followers ?? 4200);
       const day = Math.floor(since.getTime() / 86_400_000);
-      const growth = Math.round((day % 365) * rand(`${conn.id}:g`, 3, 9));
+      // Followers equal `base` on the day the demo account was connected and grow steadily from there.
+      const anchor = Number(conn.meta.anchorDay ?? day);
+      const growth = Math.round((day - anchor) * rand(`${conn.id}:g`, 3, 9));
       return {
-        followers: base + growth,
+        followers: Math.max(0, base + growth),
         reach: Math.round(base * rand(`${conn.id}:${day}:r`, 0.2, 0.55)),
         views: Math.round(base * rand(`${conn.id}:${day}:v`, 0.4, 1.1)),
         profileVisits: Math.round(base * rand(`${conn.id}:${day}:p`, 0.01, 0.04)),

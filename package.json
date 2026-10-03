@@ -19,6 +19,7 @@
     "db:migrate": "tsx src/server/db/migrate-cli.ts",
     "seed:demo": "tsx src/server/demo/seed-cli.ts",
     "vapid": "tsx scripts/generate-vapid.ts",
+    "hash-password": "tsx scripts/hash-password.ts",
     "agent": "tsx src/worker/run-once.ts"
   },
   "dependencies": {
@@ -33,6 +34,7 @@
     "postgres": "3.4.9",
     "react": "19.3.0",
     "react-dom": "19.3.0",
+    "server-only": "^0.0.1",
     "web-push": "3.6.7",
     "zod": "4.6.5"
   },

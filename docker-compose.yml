@@ -1,0 +1,37 @@
+# Production-style stack: the app (web + agent worker + renderer) and Postgres.
+#   cp .env.example .env   # fill in secrets and API keys
+#   docker compose up -d
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://luxi:${POSTGRES_PASSWORD:-change-me}@db:5432/luxi
+      DATA_DIR: /data
+    ports:
+      - "3000:3000"
+    volumes:
+      - media:/data
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: luxi
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+      POSTGRES_DB: luxi
+    volumes:
+      - pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U luxi -d luxi"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  media:
+  pg:

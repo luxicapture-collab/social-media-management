@@ -87,7 +87,7 @@ export type AppConfig = ReturnType<typeof buildConfig>;
 
 function buildConfig(env: NodeJS.ProcessEnv) {
   const e = EnvSchema.parse(env);
-  const dataDir = path.resolve(e.DATA_DIR);
+  const dataDir = path.resolve(/*turbopackIgnore: true*/ e.DATA_DIR);
   const isProd = e.NODE_ENV === "production";
   const demo = e.DEMO_MODE === "true" || (e.DEMO_MODE === "auto" && !e.ANTHROPIC_API_KEY);
 
@@ -117,7 +117,7 @@ function buildConfig(env: NodeJS.ProcessEnv) {
     },
     db: {
       url: e.DATABASE_URL,
-      pgliteDir: path.resolve(e.PGLITE_DIR ?? path.join(dataDir, "pglite")),
+      pgliteDir: path.resolve(/*turbopackIgnore: true*/ e.PGLITE_DIR ?? path.join(dataDir, "pglite")),
     },
     worker: {
       mode: e.RUN_WORKER,

@@ -74,6 +74,7 @@ Follow the community playbook and the client's voice and guardrails. Decide the 
 - "hide": spam, scams, impersonation, hate or explicit content (no reply).
 - "escalate": threats, legal claims, refund demands, press, safety, health, minors, private event details, complaints about delivered work → write a short holding reply and give needsYouReason.
 - "ignore": nothing worth answering (e.g. a lone emoji on an old post) — only when a reply would add nothing.
+Leads (price, availability, booking questions) are category "lead": reply warmly with the next step (usually DMs or the booking link) without quoting — they are flagged for the owner to follow up.
 Never promise prices, discounts, refunds, dates or availability that the brief doesn't state. Never argue.`;
 
 export const WATCHER = `## Your task: assess a change

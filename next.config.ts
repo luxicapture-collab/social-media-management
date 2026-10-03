@@ -1,13 +1,18 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "standalone",
+  // The Docker image builds with NEXT_OUTPUT=standalone; `npm start` uses the regular server.
+  output: process.env.NEXT_OUTPUT === "standalone" ? "standalone" : undefined,
   poweredByHeader: false,
   // Native/WASM server-only packages are loaded with Node's require instead of being bundled.
   serverExternalPackages: ["@electric-sql/pglite", "postgres", "web-push"],
   // The fonts and playbooks are read from disk at runtime by the agent and the video renderer.
   outputFileTracingIncludes: {
     "/**": ["./assets/fonts/**/*", "./playbooks/**/*", "./drizzle/**/*"],
+  },
+  // Runtime data (database, rendered media) and sources never belong in the server bundle.
+  outputFileTracingExcludes: {
+    "/**": ["./data/**/*", "./tests/**/*", "./scripts/**/*", "./src/**/*", "./.git/**/*"],
   },
   experimental: {
     serverActions: {

@@ -1,0 +1,186 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ tokens */
+:root {
+  --bg: #0d0c0b;
+  --surface: #151311;
+  --surface-2: #1d1a17;
+  --surface-3: #25211d;
+  --border: #2d2925;
+  --fg: #f3eee7;
+  --muted: #a39d94;
+  --faint: #6f6a63;
+  --accent: #e2b04a;
+  --accent-fg: #1c1406;
+  --accent-soft: rgba(226, 176, 74, 0.14);
+  --success: #7fbf7f;
+  --warning: #e8a13a;
+  --danger: #e46a59;
+  --info: #7aa7d9;
+  --reel: #e2b04a;
+  --story: #c792e6;
+  --post: #7aa7d9;
+  --carousel: #6fc3a8;
+  --shadow: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 8px 30px rgba(0, 0, 0, 0.35);
+  /* Chart tokens (validated: viz-1 sits inside the dark lightness band, ≥3:1 on surface). */
+  --viz-1: #bd8a2e;
+  --viz-muted: #5f5a53;
+  --viz-grid: #2a2723;
+  --viz-axis: #3a3631;
+  --viz-track: rgba(189, 138, 46, 0.2);
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #f6f2ec;
+    --surface: #ffffff;
+    --surface-2: #f1ebe2;
+    --surface-3: #e8e0d4;
+    --border: #e1d9cd;
+    --fg: #1c1915;
+    --muted: #6a6359;
+    --faint: #9a9288;
+    --accent: #a8741a;
+    --accent-fg: #fffaf1;
+    --accent-soft: rgba(168, 116, 26, 0.12);
+    --success: #2f7d3a;
+    --warning: #9a5b00;
+    --danger: #b3392a;
+    --info: #2e6bb0;
+    --reel: #a8741a;
+    --story: #8a4fb0;
+    --post: #2e6bb0;
+    --carousel: #23826a;
+    --shadow: 0 1px 2px rgba(40, 30, 10, 0.06), 0 8px 24px rgba(40, 30, 10, 0.06);
+    --viz-1: #a8741a;
+    --viz-muted: #b5ada2;
+    --viz-grid: #ebe4d9;
+    --viz-axis: #d3cabd;
+    --viz-track: rgba(168, 116, 26, 0.16);
+    color-scheme: light;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-border: var(--border);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-soft: var(--accent-soft);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+  --color-reel: var(--reel);
+  --color-story: var(--story);
+  --color-post: var(--post);
+  --color-carousel: var(--carousel);
+  --color-viz-1: var(--viz-1);
+  --color-viz-muted: var(--viz-muted);
+  --color-viz-grid: var(--viz-grid);
+  --color-viz-track: var(--viz-track);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-playfair), Georgia, serif;
+  --font-fa: var(--font-vazir), var(--font-inter), sans-serif;
+}
+
+/* ------------------------------------------------------------------ base */
+html,
+body {
+  background: var(--bg);
+  color: var(--fg);
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  min-height: 100dvh;
+}
+
+[dir="rtl"],
+.rtl {
+  font-family: var(--font-fa);
+}
+
+::selection {
+  background: var(--accent-soft);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------------ components */
+@layer components {
+  .card {
+    @apply rounded-2xl border border-border bg-surface;
+    box-shadow: var(--shadow);
+  }
+  .card-pad {
+    @apply p-4 sm:p-5;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-surface-2 px-3.5 py-2 text-sm font-medium text-fg transition-colors hover:bg-surface-3 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply border-transparent bg-accent text-accent-fg hover:bg-accent;
+    filter: saturate(1.05);
+  }
+  .btn-primary:hover {
+    filter: brightness(1.06);
+  }
+  .btn-danger {
+    @apply border-transparent text-danger hover:bg-surface-3;
+  }
+  .btn-ghost {
+    @apply border-transparent bg-transparent hover:bg-surface-2;
+  }
+  .btn-sm {
+    @apply rounded-lg px-2.5 py-1.5 text-xs;
+  }
+  .input {
+    @apply w-full rounded-xl border border-border bg-surface-2 px-3 py-2 text-sm text-fg placeholder:text-faint focus:border-accent focus:outline-none;
+  }
+  .label {
+    @apply mb-1.5 block text-xs font-medium tracking-wide text-muted uppercase;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full border border-border px-2 py-0.5 text-[11px] font-medium whitespace-nowrap text-muted;
+  }
+  .h-display {
+    font-family: var(--font-display);
+    @apply font-semibold tracking-tight;
+  }
+  .section-title {
+    @apply mb-3 text-sm font-semibold tracking-wide text-muted uppercase;
+  }
+  .kpi {
+    @apply text-2xl font-semibold tabular-nums;
+  }
+}
+
+/* Native video should never overflow cards on phones. */
+video,
+img {
+  max-width: 100%;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  scrollbar-width: none;
+}
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}

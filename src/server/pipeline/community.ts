@@ -125,7 +125,12 @@ export async function handleInboxItem(item: InboxRow): Promise<void> {
     return;
   }
 
-  const needsYou = triage.action === "escalate";
+  // Escalations get a holding reply; leads (price, availability, booking) get a normal reply that
+  // never quotes, and both come to the owner — a lead is revenue and needs a personal follow-up.
+  const escalate = triage.action === "escalate";
+  const lead = !escalate && triage.category === "lead";
+  const needsYou = escalate || lead;
+  const reason = escalate ? triage.needsYouReason : "Lead: a price or booking question. The agent replied without quoting — follow up with the details.";
   if (policy === "auto" && !dmExpired && triage.reply.trim()) {
     const done = await act(item, "reply", triage.reply);
     await db
@@ -136,23 +141,23 @@ export async function handleInboxItem(item: InboxRow): Promise<void> {
         reply: triage.reply,
         replyExternalId: done.externalId ?? null,
         repliedAt: done.ok ? new Date() : null,
-        agentNote: done.ok ? (needsYou ? `Holding reply sent. ${triage.needsYouReason}` : null) : done.error,
+        agentNote: done.ok ? (escalate ? `Holding reply sent. ${reason}` : lead ? reason : null) : done.error,
       })
       .where(eq(inboxItems.id, item.id));
   } else {
     await db
       .update(inboxItems)
-      .set({ ...base, status: needsYou ? "needs_you" : "drafted", reply: triage.reply, agentNote: dmExpired ? "The 24-hour messaging window has closed; reply from the app if needed." : needsYou ? triage.needsYouReason : null })
+      .set({ ...base, status: needsYou ? "needs_you" : "drafted", reply: triage.reply, agentNote: dmExpired ? "The 24-hour messaging window has closed; reply from the app if needed." : needsYou ? reason : null })
       .where(eq(inboxItems.id, item.id));
   }
   if (needsYou) {
     await raiseAlert({
       kind: "community",
       source: item.platform,
-      title: `${client.name}: a ${item.kind} needs you`,
-      summary: `${item.authorName ?? "Someone"}: "${item.text.slice(0, 160)}" — ${triage.needsYouReason}`,
+      title: lead ? `${client.name}: a lead to follow up` : `${client.name}: a ${item.kind} needs you`,
+      summary: `${item.authorName ?? "Someone"}: "${item.text.slice(0, 160)}" — ${reason}`,
       action: "Open the inbox to follow up personally.",
-      importance: "high",
+      importance: lead ? "medium" : "high",
       url: "/inbox",
       clientId: client.id,
       dedupeKey: `inbox:${item.id}`,
@@ -189,7 +194,11 @@ export async function sendInboxReply(inboxId: string, text: string): Promise<{ o
   const done = await act(item, "reply", text);
   await db
     .update(inboxItems)
-    .set({ status: done.ok ? "sent" : "failed", reply: text, replyExternalId: done.externalId ?? null, repliedAt: done.ok ? new Date() : null, agentNote: done.ok ? null : done.error, updatedAt: new Date() })
+    .set(
+      done.ok
+        ? { status: "sent", reply: text, replyExternalId: done.externalId ?? null, repliedAt: new Date(), agentNote: null, updatedAt: new Date() }
+        : { status: "failed", agentNote: done.error ?? "Send failed", updatedAt: new Date() },
+    )
     .where(eq(inboxItems.id, inboxId));
   return done;
 }

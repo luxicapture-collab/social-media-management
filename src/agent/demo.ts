@@ -19,6 +19,25 @@ function titleCase(s: string): string {
   return s.replace(/\b\w/g, (m) => m.toUpperCase());
 }
 
+const ANGLE_PREFIX: Partial<Record<Angle, string>> = {
+  transformation: "Before / after",
+  behind_the_scenes: "Behind the scenes",
+  teach_one_thing: "One thing to know",
+  pov_story: "POV",
+  myth_vs_reality: "Myth vs reality",
+  surreal_hook: "The impossible frame",
+};
+
+const TRAILING_STOPWORDS = new Set(["a", "an", "and", "at", "for", "in", "its", "of", "on", "our", "the", "their", "to", "we", "with"]);
+
+/** The first clause of the topic, at most `maxWords` words, never ending on a dangling preposition. */
+function shortTopic(topic: string, maxWords = 7): string {
+  const clause = topic.replace(/…$/, "").split(/[,;:—–(]/)[0].trim();
+  const words = clause.split(/\s+/).slice(0, maxWords);
+  while (words.length > 2 && TRAILING_STOPWORDS.has(words[words.length - 1].toLowerCase())) words.pop();
+  return words.join(" ");
+}
+
 const ANGLE_IDEAS: Array<{ angle: Angle; idea: (t: string) => string; why: string; scores: [number, number, number, number] }> = [
   { angle: "transformation", idea: (t) => `Raw → finished: show ${t} changing in one continuous reveal`, why: "Visible change is the most reliably shared pattern for reach.", scores: [9, 7, 7, 9] },
   { angle: "behind_the_scenes", idea: (t) => `The hour nobody sees behind ${t}`, why: "Process content builds trust and follows with warm audiences.", scores: [8, 8, 8, 8] },
@@ -119,7 +138,7 @@ export function demoPlan(input: PlanInput): PlanOutput {
           : angle.angle === "teach_one_thing"
             ? "The detail everyone misses:"
             : "Nobody sees this part.";
-    const title = titleCase(`${angle.angle.replace(/_/g, " ")}: ${topic}`).slice(0, 80);
+    const title = `${ANGLE_PREFIX[angle.angle] ?? titleCase(angle.angle.replace(/_/g, " "))}: ${shortTopic(topic)}`;
     const production = format === "reel" ? videoPlan(topic, hook, language) : framesPlan(topic, format === "carousel" ? 6 : format === "story" ? 3 : 1, format);
     return {
       title,

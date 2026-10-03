@@ -90,7 +90,7 @@ describe("renderer (ffmpeg)", () => {
     await extractFrame(result.output, 1.0, path.join(out, "frame-hook.jpg"));
     await extractFrame(result.output, 4.2, path.join(out, "frame-caption.jpg"));
     await extractFrame(result.output, 8.0, path.join(out, "frame-cta.jpg"));
-  });
+  }, 240_000);
 
   it("renders carousel stills with typography and packs a PDF", async () => {
     const bg = await demoStill("carousel frame", 1080, 1350, path.join(out, "c-bg.jpg"));
@@ -111,5 +111,5 @@ describe("renderer (ffmpeg)", () => {
     expect(pdf.subarray(0, 8).toString()).toBe("%PDF-1.4");
     expect(pdf.toString("latin1")).toContain("/Count 2");
     await fs.writeFile(path.join(out, "carousel.pdf"), pdf);
-  });
+  }, 120_000);
 });

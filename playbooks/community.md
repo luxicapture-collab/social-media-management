@@ -24,6 +24,12 @@ sends) or "off".
 - Never share personal data, never ask for payment details in comments.
 - Never reveal that replies are automated unless asked directly — then be honest.
 
+## Leads
+
+Price, availability and booking questions are leads. Reply warmly with the next step — "Sending
+you the packages in DMs now" or the booking link — never a number the brief doesn't state. The
+item is flagged **needs you** so Morteza can follow up personally with exact details.
+
 ## Hide, don't answer
 
 Spam, scams (fake "collab" offers, crypto, "DM this account"), impersonation, hate, explicit
